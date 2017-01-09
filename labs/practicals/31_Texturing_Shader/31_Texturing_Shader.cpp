@@ -1,5 +1,6 @@
 #include <glm\glm.hpp>
 #include <graphics_framework.h>
+#include <memory>
 
 using namespace std;
 using namespace graphics_framework;
@@ -8,7 +9,7 @@ using namespace glm;
 mesh m;
 effect eff;
 target_camera cam;
-#define NapierRed 0.765f, 0.082f, 0.196f
+texture tex;
 
 bool load_content() {
   // Construct geometry object
@@ -16,17 +17,27 @@ bool load_content() {
   // Create triangle data
   // Positions
   vector<vec3> positions{vec3(0.0f, 1.0f, 0.0f), vec3(-1.0f, -1.0f, 0.0f), vec3(1.0f, -1.0f, 0.0f)};
+  // *********************************
+  // Define texture coordinates for triangle
+
+  // *********************************
   // Add to the geometry
   geom.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
+  // *********************************
+  // Add texture coordinate buffer to geometry
+
+  // *********************************
 
   // Create mesh object
   m = mesh(geom);
 
-  // Load in colour shaders
-  eff.add_shader("29_Shaders/colour.vert", GL_VERTEX_SHADER);
-  eff.add_shader("29_Shaders/colour.frag", GL_FRAGMENT_SHADER);
+  // Load in texture shaders here
+  eff.add_shader("31_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
+  eff.add_shader("31_Texturing_Shader/simple_texture.frag", GL_FRAGMENT_SHADER);
   // *********************************
   // Build effect
+
+  // Load texture "textures/sign.jpg"
 
   // *********************************
 
@@ -58,8 +69,11 @@ bool render() {
                      1,                               // Number of values - 1 mat4
                      GL_FALSE,                        // Transpose the matrix?
                      value_ptr(MVP));                 // Pointer to matrix data
+
   // *********************************
-  // Set the colour value for the shader here (Hint: rep the Brand, use the NapierRed macro)
+  // Bind texture to renderer
+
+  // Set the texture value for the shader here
 
   // *********************************
 
@@ -71,7 +85,7 @@ bool render() {
 
 void main() {
   // Create application
-  app application;
+  app application("31_Texturing_Shader");
   // Set load content, update and render methods
   application.set_load_content(load_content);
   application.set_update(update);
