@@ -13,13 +13,17 @@ bool load_content() {
   // *********************************
   // Set geometry type to line loop
 
+	geom.set_type(GL_LINE_LOOP);
   // *********************************
 
   // Positions
   vector<vec3> positions{
       // *********************************
       // Add the position data for four lines here
-
+	  vec3(1,-1,0),
+	  vec3(1,1,0),
+	  vec3(-1,1,0),
+	  vec3(-1.0f, -1.0f, 0.0f)
       // *********************************
   };
   // Colours

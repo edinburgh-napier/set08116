@@ -12,14 +12,17 @@ target_camera cam;
 bool load_content() {
   // *********************************
   // Set geometry type to triangle strip
-
+	geom.set_type(GL_TRIANGLE_STRIP);
   // *********************************
   // Positions
   vector<vec3> positions{
       // *********************************
       // Add the position data for two triangles here
-
-      // *********************************
+	  vec3(-1.0f, -1.0f, 0.0f),
+	  vec3(1.0f, -1.0f, 0.0f),
+	  vec3(-1.0f, 1.0f, 0.0f),
+	vec3(1.0f, 1.0f, 0.0f),
+// *********************************
   };
   // Colours
   vector<vec4> colours{vec4(1.0f, 0.0f, 0.0f, 1.0f), vec4(1.0f, 0.0f, 0.0f, 1.0f), vec4(1.0f, 0.0f, 0.0f, 1.0f),
