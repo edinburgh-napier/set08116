@@ -28,8 +28,7 @@ bool load_content() {
   cam.set_position(vec3(200.0f, 200.0f, 200.0f));
   cam.set_target(vec3(0.0f, 0.0f, 0.0f));
 
-  auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height());
-  cam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
+  cam.set_projection(quarter_pi<float>(), renderer::get_screen_aspect(), 0.1f, 1000.0f);
   return true;
 }
 
