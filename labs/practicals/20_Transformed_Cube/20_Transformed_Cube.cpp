@@ -66,7 +66,7 @@ bool update(float delta_time) {
   // *********************************
   // Use keys to update transform values
   // WSAD - movement
-  // Cursor - rotation
+  // Arrow Keys - rotation
   // O decrease scale, P increase scale
 
 
