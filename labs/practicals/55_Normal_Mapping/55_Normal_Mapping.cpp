@@ -37,6 +37,7 @@ bool load_content() {
   light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   light.set_direction(normalize(vec3(1.0f, 1.0f, 0.0f)));
 
+
   // Load in shaders
   eff.add_shader("55_Normal_Mapping/shader.vert", GL_VERTEX_SHADER);
   eff.add_shader("55_Normal_Mapping/shader.frag", GL_FRAGMENT_SHADER);

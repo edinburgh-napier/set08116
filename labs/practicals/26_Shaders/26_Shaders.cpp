@@ -23,8 +23,8 @@ bool load_content() {
   m = mesh(geom);
 
   // Load in colour shaders
-  eff.add_shader("29_Shaders/colour.vert", GL_VERTEX_SHADER);
-  eff.add_shader("29_Shaders/colour.frag", GL_FRAGMENT_SHADER);
+  eff.add_shader("26_Shaders/colour.vert", GL_VERTEX_SHADER);
+  eff.add_shader("26_Shaders/colour.frag", GL_FRAGMENT_SHADER);
   // *********************************
   // Build effect
 

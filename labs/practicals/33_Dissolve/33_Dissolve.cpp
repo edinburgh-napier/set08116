@@ -23,8 +23,8 @@ bool load_content() {
   m.get_transform().scale = vec3(10.0f);
 
   // Load in dissolve shader
-  eff.add_shader("36_Dissolve/dissolve.vert", GL_VERTEX_SHADER);
-  eff.add_shader("36_Dissolve/dissolve.frag", GL_FRAGMENT_SHADER);
+  eff.add_shader("33_Dissolve/dissolve.vert", GL_VERTEX_SHADER);
+  eff.add_shader("33_Dissolve/dissolve.frag", GL_FRAGMENT_SHADER);
 
   // Build effect
   eff.build();

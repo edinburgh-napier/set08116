@@ -32,8 +32,8 @@ bool load_content() {
   m = mesh(geom);
 
   // Load in texture shaders, !Note that are pulling in shader file from previous project!
-  eff.add_shader("31_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
-  eff.add_shader("31_Texturing_Shader/simple_texture.frag", GL_FRAGMENT_SHADER);
+  eff.add_shader("27_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
+  eff.add_shader("27_Texturing_Shader/simple_texture.frag", GL_FRAGMENT_SHADER);
 
   // *********************************
   // Build effect
