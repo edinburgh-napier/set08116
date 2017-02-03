@@ -1,0 +1,27 @@
+#version 430 core
+
+// Process particles in blocks of 128
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+layout(std430, binding = 0) buffer PositionBuffer { vec3 positions[]; };
+layout(std430, binding = 1) buffer VelocityBuffer { vec3 velocities[]; };
+
+// Delta time
+uniform float delta_time;
+
+void main(void) {
+  uint index = gl_GlobalInvocationID.x;
+
+  // Read the current position and velocity from the buffers
+  vec3 vel = velocities[index];
+  vec3 pos = positions[index];
+
+  vec3 new_pos = pos + (vel * delta_time);
+
+  if (new_pos.y > 5.0) {
+    new_pos.y = 0.0;
+  }
+
+  // Store the new position and velocity back into the buffers
+  positions[index] = new_pos;
+}

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-project(set08116_graphics)
+project(set08116_graphics_coursework)
 SET(OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY})
@@ -33,44 +33,21 @@ download_project(PROJ enu_gfx
 add_subdirectory(${enu_gfx_SOURCE_DIR} ${enu_gfx_BINARY_DIR})
 include_directories(${enu_gfx_SOURCE_DIR}/src ${enu_graphics_framework_incs}) 
 
-#file(GLOB_RECURSE LIB_SOURCE_FILES lib_phys_utils/*.cpp lib_phys_utils/*.h)
-#add_library(lib_phys_utils STATIC ${LIB_SOURCE_FILES})
-
 #Grab practical folders
-file(GLOB children RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" practicals/*)
-SET(dirlist "")
-FOREACH(child ${children})
-  IF(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${child})
-    get_filename_component(childName ${child} NAME BASE_DIR practicals)
-    LIST(APPEND dirlist ${childName})
-    file(GLOB_RECURSE SOURCE_FILES ${child}/*.cpp ${child}/*.h ${child}/*.frag ${child}/*.vert ${child}/*.geom ${child}/*.comp)
-    file(GLOB_RECURSE NOT_RESOURCE_FILES ${child}/*.cpp ${child}/*.h)
-    file(GLOB_RECURSE RESOURCE_FILES  ${child}/*.*)
-    LIST(REMOVE_ITEM RESOURCE_FILES ${NOT_RESOURCE_FILES}) 
-    
-    add_executable( ${childName} ${SOURCE_FILES})
-   
-    #dependencies
-    target_link_libraries(${childName} enu_graphics_framework )
-    add_dependencies(${childName} enu_graphics_framework )
-    
-    #copy General resources to build post build script
-    add_custom_command(TARGET ${childName} POST_BUILD  
-    COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" $<TARGET_FILE_DIR:${childName}>)
-    
-    if(RESOURCE_FILES)
-    message("Resources: ${RESOURCE_FILES}")
-      #copy Project Specific Resources
-      FOREACH(res ${RESOURCE_FILES})
-        get_filename_component(fn ${res} NAME)
-        add_custom_command(TARGET ${childName} POST_BUILD  
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${res} $<TARGET_FILE_DIR:${childName}>/${childName}/${fn})
-      ENDFOREACH()
-    endif(RESOURCE_FILES)
-    
-    #set outDir as debugging directory for each project
-    if(${MSVC})
-    file( WRITE "${CMAKE_CURRENT_BINARY_DIR}/${childName}.vcxproj.user" 
+SET(child "src")
+file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.*.h res/shaders/*.frag res/shaders/*.vert res/shaders/*.geom res/shaders/*.comp)
+add_executable(coursework ${SOURCE_FILES})
+
+#dependencies
+target_link_libraries(coursework enu_graphics_framework )
+	
+#copy General resources to build post build script
+add_custom_command(TARGET coursework POST_BUILD  
+COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" $<TARGET_FILE_DIR:coursework>)
+	
+if(${MSVC})
+	#set outDir as debugging directory
+    file( WRITE "${CMAKE_CURRENT_BINARY_DIR}/coursework.vcxproj.user" 
         "<?xml version=\"1.0\" encoding=\"utf-8\"?>
         <Project ToolsVersion=\"4.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">
         <PropertyGroup Condition=\"'$(Configuration)|$(Platform)'=='Debug|x64'\">
@@ -82,13 +59,9 @@ FOREACH(child ${children})
             <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
         </PropertyGroup>
         </Project>")
-    endif()
-  ENDIF()
-ENDFOREACH()
-
-if(${MSVC})
-      target_compile_options(enu_graphics_framework PUBLIC /MP)
-ENDIF()
+	target_compile_options(coursework PUBLIC /MP)
+	target_compile_options(enu_graphics_framework PUBLIC /MP)
+endif()
 
 set_target_properties(enu_graphics_framework PROPERTIES FOLDER "DEPS")
 set_target_properties(glm_dummy PROPERTIES FOLDER "DEPS")
