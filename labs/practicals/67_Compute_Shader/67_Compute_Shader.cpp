@@ -7,36 +7,26 @@ using namespace graphics_framework;
 using namespace glm;
 
 // Maximum number of particles
-const unsigned int MAX_PARTICLES = 2048;
+const unsigned int MAX_PARTICLES = 4096;
 
-// A particle
-struct particle {
-  vec3 position = vec3(0, 0, 0);
-  vec3 velocity = vec3(0, 0, 0);
-};
+vec4 positions[MAX_PARTICLES];
+vec4 velocitys[MAX_PARTICLES];
 
-// Particles in the system
-particle particles[MAX_PARTICLES];
-vec3 positions[MAX_PARTICLES];
-vec3 velocitys[MAX_PARTICLES];
-
-GLuint G_ObjectsBuffer, G_Compute_Buffers, G_Position_buffer, G_Velocity_buffer, G_Attractor_buffer,
-    G_AttractorMass_buffer, G_Life_buffer;
+GLuint G_Position_buffer, G_Velocity_buffer;
 
 effect eff;
 effect compute_eff;
 target_camera cam;
 GLuint vao;
+
 bool load_content() {
   default_random_engine rand(duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
   uniform_real_distribution<float> dist;
 
   // Initilise particles
   for (unsigned int i = 0; i < MAX_PARTICLES; ++i) {
-    particles[i].position = vec3(((10.0f * dist(rand)) - 5.0f), 1.0f, 0.0f);
-    particles[i].velocity = vec3(0.0f, 0.1f + dist(rand), 0.0f);
-    positions[i] = particles[i].position;
-    velocitys[i] = particles[i].velocity;
+    positions[i] = vec4(((14.0f * dist(rand)) - 7.0f), 1.0f, 0.0f, 0.0f);
+    velocitys[i] = vec4(0.0f, 0.1f + dist(rand), 0.0f, 0.0f);
   }
 
   // Load in shaders
@@ -47,16 +37,26 @@ bool load_content() {
   compute_eff.add_shader("67_Compute_Shader/particle.comp", GL_COMPUTE_SHADER);
   compute_eff.build();
 
-  glGenBuffers(1, &G_Position_buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, G_Position_buffer);
-  glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * sizeof(vec3), positions, GL_DYNAMIC_COPY);
-  glGenBuffers(1, &G_Velocity_buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, G_Velocity_buffer);
-  glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * sizeof(vec3), velocitys, GL_DYNAMIC_COPY);
-
   // a useless vao, but we need it bound or we get errors.
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
+  // *********************************
+   //Generate Position Data buffer
+
+  // Bind as GL_SHADER_STORAGE_BUFFER
+
+  // Send Data to GPU, use GL_DYNAMIC_DRAW
+
+
+  // Generate Velocity Data buffer
+
+  // Bind as GL_SHADER_STORAGE_BUFFER
+
+  // Send Data to GPU, use GL_DYNAMIC_DRAW
+
+  // *********************************
+   //Unbind
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
   renderer::setClearColour(0, 0, 0);
 
@@ -77,32 +77,40 @@ bool update(float delta_time) {
 }
 
 bool render() {
-
+  // Bind Compute Shader
   renderer::bind(compute_eff);
+  // Bind data as SSBO
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, G_Position_buffer);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, G_Velocity_buffer);
+  // Dispatch
   glDispatchCompute(MAX_PARTICLES / 128, 1, 1);
+  // Sync, wait for completion
   glMemoryBarrier(GL_ALL_BARRIER_BITS);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-  // Bind effect
+  // Bind render effect
   renderer::bind(eff);
   // Create MVP matrix
   mat4 M(1.0f);
   auto V = cam.get_view();
   auto P = cam.get_projection();
   auto MVP = P * V * M;
-
   // Set the colour uniform
   glUniform4fv(eff.get_uniform_location("colour"), 1, value_ptr(vec4(1.0f)));
-
   // Set MVP matrix uniform
   glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
+  // Bind position buffer as GL_ARRAY_BUFFER
   glBindBuffer(GL_ARRAY_BUFFER, G_Position_buffer);
+  // Setup vertex format
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
-
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void *)0);
+  // Render
   glDrawArrays(GL_POINTS, 0, MAX_PARTICLES);
+  // Tidy up
+  glDisableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glUseProgram(0);
 
   return true;
 }
