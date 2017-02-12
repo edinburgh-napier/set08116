@@ -8,6 +8,7 @@ layout(std430, binding = 1) buffer VelocityBuffer { vec4 velocities[]; };
 
 // Delta time
 uniform float delta_time;
+uniform vec3 max_dims;
 
 void main(void) {
   uint index = gl_GlobalInvocationID.x;
@@ -22,8 +23,12 @@ void main(void) {
   // *********************************
 
   // Keep all particles on screen
-  if (new_pos.y > 8.0) {
+  if (abs(new_pos.x) > max_dims.x) {
+    new_pos.x = 0.0;
+  } else if (abs(new_pos.y) > max_dims.y) {
     new_pos.y = 0.0;
+  } else if (abs(new_pos.z) > max_dims.z) {
+    new_pos.z = 0.0;
   }
 
   // Store the new position and velocity back into the buffers

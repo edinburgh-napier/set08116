@@ -79,11 +79,10 @@ bool update(float delta_time) {
   static mesh &target_mesh = meshes["chaser"];
 
   // The ratio of pixels to rotation - remember the fov
-  static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
-  static double ratio_height =
-      (quarter_pi<float>() *
-       (static_cast<float>(renderer::get_screen_height()) / static_cast<float>(renderer::get_screen_width()))) /
-      static_cast<float>(renderer::get_screen_height());
+  static const float sh = static_cast<float>(renderer::get_screen_height());
+  static const float sw = static_cast<float>(renderer::get_screen_height());
+  static const double ratio_width = quarter_pi<float>() / sw;
+  static const double ratio_height = (quarter_pi<float>() * (sh / sw)) / sh;
 
   double current_x;
   double current_y;

@@ -7,7 +7,7 @@ using namespace graphics_framework;
 using namespace glm;
 
 // Maximum number of particles
-const unsigned int MAX_PARTICLES = 4096;
+const unsigned int MAX_PARTICLES = 2 << 11;
 
 vec4 positions[MAX_PARTICLES];
 vec4 velocitys[MAX_PARTICLES];
@@ -20,13 +20,14 @@ target_camera cam;
 GLuint vao;
 
 bool load_content() {
+  cout << "Generating " << MAX_PARTICLES << " Particles" << endl;
   default_random_engine rand(duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
   uniform_real_distribution<float> dist;
 
   // Initilise particles
   for (unsigned int i = 0; i < MAX_PARTICLES; ++i) {
-    positions[i] = vec4(((14.0f * dist(rand)) - 7.0f), 1.0f, 0.0f, 0.0f);
-    velocitys[i] = vec4(0.0f, 0.1f + dist(rand), 0.0f, 0.0f);
+    positions[i] = vec4(((14.0f * dist(rand)) - 7.0f), 8.0f * dist(rand), 0.0f, 0.0f);
+    velocitys[i] = vec4(0.0f, 0.1f + (2.0f * dist(rand)), 0.0f, 0.0f);
   }
 
   // Load in shaders
@@ -70,6 +71,7 @@ bool load_content() {
 bool update(float delta_time) {
   renderer::bind(compute_eff);
   glUniform1f(compute_eff.get_uniform_location("delta_time"), delta_time);
+  glUniform3fv(compute_eff.get_uniform_location("max_dims"), 1, value_ptr(vec3(7.0f, 8.0f, 5.0f)));
 
   // Update the camera
   cam.update(delta_time);
