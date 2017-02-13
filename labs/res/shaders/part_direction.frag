@@ -27,11 +27,11 @@ vec4 calculate_direction(in directional_light light, in material mat, in vec3 no
  // *********************************
 	// Calculate ambient component
 
-	// Calculate diffuse component
+	// Calculate diffuse component :  (diffuse reflection * light_colour) *  max(dot(normal, light direction), 0)
 
-	// Calculate half vector
+	// Calculate normalized half vector 
 
-	// Calculate specular component
+	// Calculate specular component : (specular reflection * light_colour) * (max(dot(normal, half vector), 0))^mat.shininess
 
  // *********************************
 	// Calculate colour to return

@@ -115,6 +115,7 @@ bool render() {
     auto m = e.second;
     // Create MVP matrix
     auto M = m.get_transform().get_transform_matrix();
+    // *********************************
     // View matrix taken from shadow map
 
     // *********************************
