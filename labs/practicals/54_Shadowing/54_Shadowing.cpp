@@ -177,6 +177,7 @@ bool render() {
 
     // Bind shadow map texture - use texture unit 1
 
+	//Set the shadow_map uniform
 
     // Render mesh
 
