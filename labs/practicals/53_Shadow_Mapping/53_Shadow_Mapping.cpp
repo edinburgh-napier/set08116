@@ -70,8 +70,9 @@ bool update(float delta_time) {
   meshes["teapot"].get_transform().rotate(vec3(0.0f, 0.0f, half_pi<float>()) * delta_time);
 
   // *********************************
-  // Update the shadow map properties from the spot light
+  // Update the shadow map light_position from the spot light
 
+  // do the same for light_dir property
 
   // *********************************
 
@@ -91,7 +92,7 @@ bool render() {
 
   // Clear depth buffer bit
 
-  // Set render mode to cull face
+  // Set face cull mode to front
 
   // *********************************
 
@@ -119,7 +120,7 @@ bool render() {
   // *********************************
   // Set render target back to the screen
 
-  // Set cull face to back
+  // Set face cull mode to back
 
   // *********************************
 

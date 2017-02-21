@@ -1,4 +1,4 @@
-#version 440
+#version 450 core
 // This shader requires direction.frag and normal_map.frag
 
 // Directional light structure

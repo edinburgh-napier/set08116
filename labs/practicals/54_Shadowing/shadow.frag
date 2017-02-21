@@ -59,7 +59,7 @@ void main() {
   // *********************************
   // Calculate shade factor
 
-  // Calculate view direction
+  // Calculate view direction, normalize it
 
   // Sample texture
 
@@ -67,6 +67,7 @@ void main() {
 
   // Scale colour by shade
 
+  //Ensure alpha is 1.0
 
   // *********************************
 }
