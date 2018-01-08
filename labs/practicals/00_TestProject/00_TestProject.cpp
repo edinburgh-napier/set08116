@@ -18,6 +18,7 @@ target_camera cam;
 cubemap cube_map;
 float theta = 0.0f;
 
+
 bool load_content() {
 
   vector<vec3> positions{vec3(0.0f, 1.0f, 0.0f), vec3(-1.0f, -1.0f, 0.0f), vec3(1.0f, -1.0f, 0.0f)};
@@ -29,12 +30,12 @@ bool load_content() {
   geom4 = geometry_builder::create_box();
 
   // Load in model
-  auto src = "../../assimp-src/test/models/OBJ/box.obj";
+  auto src = "models/icosphere.obj";
   geom3 = geometry(src);
 
-  src = "../../assimp-src/test/models/LWO/LWO2/uvtest.png";
+  src = "textures/sign.jpg";
   tpng = texture(src, false, false);
-  src = "../../assimp-src/test/models/OBJ/engineflare1.jpg";
+  src = "textures/stonygrass.jpg";
   tjpg = texture(src, false, false);
 
   array<string, 6> filenames = {"textures/sahara_ft.jpg", "textures/sahara_bk.jpg", "textures/sahara_up.jpg",
@@ -110,18 +111,18 @@ bool render() {
   renderer::bind(tjpg, 0);
   renderer::bind(tpng, 1);
   glUniform1i(teff.get_uniform_location("tex"), 0);
-  glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE,
-                     value_ptr(P * V * translate(mat4(), vec3(3.0f, -5.0f, -8.0f))));
+  glUniformMatrix4fv(teff.get_uniform_location("MVP"), 1, GL_FALSE,
+                     value_ptr(P * V * translate(mat4(1.0f), vec3(3.0f, -5.0f, -8.0f))));
   renderer::render(geom2);
   glUniform1i(teff.get_uniform_location("tex"), 1);
-  glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE,
-                     value_ptr(P * V * translate(mat4(), vec3(-8.0f, -5.0f, -8.0f))));
+  glUniformMatrix4fv(teff.get_uniform_location("MVP"), 1, GL_FALSE,
+                     value_ptr(P * V * translate(mat4(1.0f), vec3(-8.0f, -5.0f, -8.0f))));
   renderer::render(geom2);
 
   glDisable(GL_CULL_FACE);
 
   renderer::bind(sbeff);
-  MVP = P * V * scale(mat4(), vec3(100.0f));
+  MVP = P * V * scale(mat4(1.0f), vec3(100.0f));
   glUniformMatrix4fv(sbeff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
   renderer::bind(cube_map, 0);
   glUniform1i(sbeff.get_uniform_location("cubemap"), 0);

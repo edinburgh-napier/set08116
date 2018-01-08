@@ -43,7 +43,7 @@ bool load_content() {
 bool update(float delta_time) {
   // Use keys to update transform values
   // WSAD - movement
-  // Cursor - rotation
+  // arrow keys - rotation
   // O decrease scale, P increase scale
   // Use the mesh functions, I've left two of the IFs as a hint
   if (glfwGetKey(renderer::get_window(), 'W')) {

@@ -1,40 +1,43 @@
-cmake_minimum_required(VERSION 3.3)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+cmake_minimum_required(VERSION 3.9)
+# Compiler flags
+if (MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /EHsc" CACHE INTERNAL "" FORCE)
+endif(MSVC)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(set08116_graphics)
-SET(OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+#### Setup Directories ####
+#Main output directory
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/bin")
+SET (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/lib")
+# Ouput all DLLs from all libs into main build folder
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY})
-foreach (config ${CMAKE_CONFIGURATION_TYPES})
-  string (TOUPPER ${config} config)
-  set_target_properties(${_project} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}"
-    ARCHIVE_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}"
-    LIBRARY_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}"
-    #PDB_OUTPUT_DIRECTORY_${config} ${sym_path}
-    VS_INTERMEDIATE_DIRECTORY_${config} "temp"
-  )
-  SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}")
-  SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}")
-  SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}")
-  SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}")
-  SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}")
-  SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${config} "${OUTPUT_DIRECTORY}/${config}")
-  SET( VS_INTERMEDIATE_DIRECTORY_${config} "temp/${config}")
-  link_directories("${OUTPUT_DIRECTORY}/${config}")
-endforeach ()
+#### Add External Dependencies ####
+#enu_graphics_framework
+add_subdirectory("framework")
 
-include(DownloadProject.cmake)
-download_project(PROJ enu_gfx
-  GIT_REPOSITORY      https://github.com/edinburgh-napier/set08116_framework
-  GIT_TAG             master
-  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
+#Glew and Devil are dumb and don't listen to our build directories, so manually set it.
+set(IL_RUNTIME_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} CACHE PATH "Output location for Devil .dlls/.so" FORCE)
+set(IL_LIBRARY_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} CACHE PATH "Output location for Devil .libs" FORCE)
+
+set_target_properties(IL PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+)
+set_target_properties(ILU PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
 )
 
-add_subdirectory(${enu_gfx_SOURCE_DIR} ${enu_gfx_BINARY_DIR})
-include_directories(${enu_gfx_SOURCE_DIR}/src ${enu_graphics_framework_incs}) 
-
-#file(GLOB_RECURSE LIB_SOURCE_FILES lib_phys_utils/*.cpp lib_phys_utils/*.h)
-#add_library(lib_phys_utils STATIC ${LIB_SOURCE_FILES})
+set_target_properties(libglew_shared PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+)
 
 #Grab practical folders
 file(GLOB children RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" practicals/*)
@@ -51,13 +54,19 @@ FOREACH(child ${children})
     add_executable( ${childName} ${SOURCE_FILES})
    
     #dependencies
-    target_link_libraries(${childName} enu_graphics_framework )
-    add_dependencies(${childName} enu_graphics_framework )
+    target_link_libraries(${childName} PRIVATE enu_graphics_framework )
+    #add_dependencies(${childName} enu_graphics_framework )
     
     #copy General resources to build post build script
     add_custom_command(TARGET ${childName} POST_BUILD  
     COMMAND ${CMAKE_COMMAND} -E copy_directory  "${PROJECT_SOURCE_DIR}/res" $<TARGET_FILE_DIR:${childName}>)
-    
+	
+    add_custom_command(TARGET ${childName} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_directory
+			"${PROJECT_SOURCE_DIR}/framework/res"
+			$<TARGET_FILE_DIR:${childName}>
+	)
+	
     if(RESOURCE_FILES)
     message("Resources: ${RESOURCE_FILES}")
       #copy Project Specific Resources
@@ -86,10 +95,4 @@ FOREACH(child ${children})
   ENDIF()
 ENDFOREACH()
 
-if(${MSVC})
-      target_compile_options(enu_graphics_framework PUBLIC /MP)
-ENDIF()
-
 set_target_properties(enu_graphics_framework PROPERTIES FOLDER "DEPS")
-set_target_properties(glm_dummy PROPERTIES FOLDER "DEPS")
-set_target_properties(assimp PROPERTIES FOLDER "DEPS")
