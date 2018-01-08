@@ -11,11 +11,11 @@ where /q cmake
 IF %ERRORLEVEL%==1 (
     Echo Couldn't find cmake.exe
 ) ELSE ( 
-   echo Cmake building for VS2015 Win64
+   echo Cmake building for VS2017 Win64
    cd ..
    mkdir %CurrDirName%_build
    cd %CurrDirName%_build
-   cmake -G "Visual Studio 14 2015 Win64" ../%CurrDirName%/
+   cmake -G "Visual Studio 15 2017 Win64" ../%CurrDirName%/
    echo cmake complete, open the sln in the build dir
  )
 pause > nul
