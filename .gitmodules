@@ -1,0 +1,3 @@
+[submodule "labs/framework"]
+	path = labs/framework
+	url = https://github.com/edinburgh-napier/set08116_framework.git
