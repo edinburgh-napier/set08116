@@ -1,6 +1,6 @@
 #version 440
 
-// This shader requires spot.frag, shadow.frag
+// This shader requires spot.frag, part_shadow.frag
 
 // Spot light data
 #ifndef SPOT_LIGHT

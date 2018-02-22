@@ -60,8 +60,8 @@ bool load_content() {
   spot.set_power(10.0f);
 
   // Load in shaders
-  main_eff.add_shader("54_Shadowing/shadow.vert", GL_VERTEX_SHADER);
-  vector<string> frag_shaders{"54_Shadowing/shadow.frag", "shaders/part_spot.frag", "shaders/part_shadow.frag"};
+  main_eff.add_shader("54_Shadowing/shader.vert", GL_VERTEX_SHADER);
+  vector<string> frag_shaders{"54_Shadowing/shader.frag", "shaders/part_spot.frag", "shaders/part_shadow.frag"};
   main_eff.add_shader(frag_shaders, GL_FRAGMENT_SHADER);
 
   shadow_eff.add_shader("50_Spot_Light/spot.vert", GL_VERTEX_SHADER);

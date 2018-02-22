@@ -8,7 +8,8 @@ using namespace glm;
 geometry geom;
 effect eff;
 target_camera cam;
-
+//Note: This lab may not Run for you.
+//This will be explained in the practical.
 bool load_content() {
   // *********************************
   // Set geometry type to quads

@@ -63,7 +63,7 @@ bool load_content() {
 
 bool update(float delta_time) {
   // Move camera, notice the slightly altered technique
-  vec3 dir;
+  vec3 dir = vec3(0.0f);
   if (glfwGetKey(renderer::get_window(), GLFW_KEY_UP)) {
     dir += vec3(0.0f, 10.0f, 0.0f);
   }

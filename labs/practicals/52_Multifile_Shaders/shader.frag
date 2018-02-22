@@ -1,6 +1,6 @@
 #version 440
 
-// This shader requires direction.frag, point.frag and spot.frag
+// This shader requires part_direction.frag, part_point.frag,part_spot.frag
 
 // Directional light structure
 #ifndef DIRECTIONAL_LIGHT
