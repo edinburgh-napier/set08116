@@ -21,8 +21,8 @@ bool load_content() {
   geom.add_buffer(colours, BUFFER_INDEXES::COLOUR_BUFFER);
 
   // Load in shaders
-  eff.add_shader("shaders/basic.vert", GL_VERTEX_SHADER);
-  eff.add_shader("shaders/basic.frag", GL_FRAGMENT_SHADER);
+  eff.add_shader("res/shaders/basic.vert", GL_VERTEX_SHADER);
+  eff.add_shader("res/shaders/basic.frag", GL_FRAGMENT_SHADER);
   // Build effect
   eff.build();
 
